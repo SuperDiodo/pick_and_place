@@ -1,0 +1,8 @@
+arm
+/home/superdiodo/pick_and_place/devel/.private/arm/cmake.lock /home/superdiodo/pick_and_place/devel/./cmake.lock
+/home/superdiodo/pick_and_place/devel/.private/arm/lib/pkgconfig/arm.pc /home/superdiodo/pick_and_place/devel/lib/pkgconfig/arm.pc
+/home/superdiodo/pick_and_place/devel/.private/arm/lib/arm/simple_move /home/superdiodo/pick_and_place/devel/lib/arm/simple_move
+/home/superdiodo/pick_and_place/devel/.private/arm/lib/arm/simple_grasp /home/superdiodo/pick_and_place/devel/lib/arm/simple_grasp
+/home/superdiodo/pick_and_place/devel/.private/arm/lib/arm/pick_place_tutorial /home/superdiodo/pick_and_place/devel/lib/arm/pick_place_tutorial
+/home/superdiodo/pick_and_place/devel/.private/arm/share/arm/cmake/armConfig-version.cmake /home/superdiodo/pick_and_place/devel/share/arm/cmake/armConfig-version.cmake
+/home/superdiodo/pick_and_place/devel/.private/arm/share/arm/cmake/armConfig.cmake /home/superdiodo/pick_and_place/devel/share/arm/cmake/armConfig.cmake

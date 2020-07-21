@@ -1,0 +1,5 @@
+panda_configuration
+/home/superdiodo/pick_and_place/devel/.private/panda_configuration/cmake.lock /home/superdiodo/pick_and_place/devel/./cmake.lock
+/home/superdiodo/pick_and_place/devel/.private/panda_configuration/lib/pkgconfig/panda_configuration.pc /home/superdiodo/pick_and_place/devel/lib/pkgconfig/panda_configuration.pc
+/home/superdiodo/pick_and_place/devel/.private/panda_configuration/share/panda_configuration/cmake/panda_configurationConfig.cmake /home/superdiodo/pick_and_place/devel/share/panda_configuration/cmake/panda_configurationConfig.cmake
+/home/superdiodo/pick_and_place/devel/.private/panda_configuration/share/panda_configuration/cmake/panda_configurationConfig-version.cmake /home/superdiodo/pick_and_place/devel/share/panda_configuration/cmake/panda_configurationConfig-version.cmake
