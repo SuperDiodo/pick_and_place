@@ -1,0 +1,3 @@
+-install opencv
+sudo apt-get install ros-melodic-vision-opencv
+

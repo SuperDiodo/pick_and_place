@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- MoveIt configurations-->
+  <arg name="use_gui" default="false" />
+  <!-- By default, we do not start a database (it can be large) -->
+  <arg name="db" default="false" />
+  <!-- By default, we are not in debug mode -->
+  <arg name="moveit_debug" default="false" />
+
+  <!-- Gazebo configurations-->
+  <arg name="gazebo_debug" default="false"/>
+  <arg name="gui" default="true"/>
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="headless" default="false"/>
+
+  <!-- Change the controller type of gripper from position to effort -->
+  <arg name="use_effort_gripper" default="false" />
+	<!--
+  <include file="$(find crane_x7_control)/launch/crane_x7_fake_control.launch">
+    <arg name="use_effort_gripper" value="$(arg use_effort_gripper)" />
+  </include>
+	-->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find vision)/worlds/table.world"/>
+    <arg name="debug" value="$(arg gazebo_debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
+  </include>
+
+  
+
+</launch>

@@ -26,3 +26,7 @@ add_executable(simple_grasp src/simple_grasp.cpp)
 target_link_libraries(simple_grasp ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS simple_grasp DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
+add_executable(application src/application.cpp)
+target_link_libraries(application ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS application DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
