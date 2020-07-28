@@ -33,9 +33,10 @@ class ImageConverter
 	cv::Mat drawing;
 
 	// x and y coordinater of camera frame wrt global frame
-	float x_camera_frame = -0.1033;
-	float y_camera_frame = -0.5660;
-	float m_width = 1.12; // how many meters in the width of the image
+	float x_camera_frame = 1.087;
+	float y_camera_frame = -1.221;
+	float z_surface = 0.84;
+	float m_width = 2.38; // how many meters in the width of the image
 
 public:
   ImageConverter(): it(nh)
@@ -136,7 +137,7 @@ public:
 				// find (x,y,yaw) in global frame
 				p.position.x = (centroid.y*m_per_px)+x_camera_frame; // X in global frame
 				p.position.y = (centroid.x*m_per_px)+y_camera_frame;	// Y in global frame
-				p.position.z = 1.04;
+				p.position.z = z_surface;
 				p.orientation.z = findOrientation(canny, boundRect[i]);
 				pose_array.poses.push_back(p);
 
