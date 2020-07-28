@@ -3,6 +3,7 @@
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <geometry_msgs/PoseArray.h>
+#include <gazebo_msgs/ModelStates.h>
 #include <unistd.h>
 
 double fRand(double fMin, double fMax)
@@ -77,7 +78,7 @@ public:
   {
 
     ros::NodeHandle ps;
-    ros::Subscriber pose_sub = ps.subscribe("/poses", 1, &cr35ia::getPoses, this);
+    ros::Subscriber pose_sub = ps.subscribe("/gazebo/model_states", 1, &cr35ia::getModelStates, this);
 
     /* wait for a pose */
     while (detected == false)
@@ -88,33 +89,16 @@ public:
 
     ps.shutdown();
 
-    for (auto &pose : detected_poses_array.poses)
-    {
-      geometry_msgs::Pose target_pose;
-      target_pose.position.x = pose.position.x + 1;
-      target_pose.position.y = pose.position.y;
-      target_pose.position.z = 0.8 + 0.1;
-
-      /*tf2::Quaternion orientation;
-      orientation.setRPY(0, 0, fRand(-3.14, 3.14));
-      target_pose.orientation = tf2::toMsg(orientation);*/
-
-      std::cout << "Orientation: " << pose.orientation.x << " " << pose.orientation.y << " " << pose.orientation.x << std::endl;
-
-      target_pose.orientation = pose.orientation;
-      targets.push_back(target_pose);
-    }
-
-    std::cout << "Detected pose: " << std::endl;
-    for (auto &pose : targets)
+    std::cout << "Model poses: " << std::endl;
+    for (auto &pose : model_poses)
     {
       std::cout << "X: " << pose.position.x << std::endl;
       std::cout << "Y: " << pose.position.y << std::endl;
       std::cout << "Z: " << pose.position.z << std::endl;
-      std::cout << "Orientation: " << pose.orientation.x << " " << pose.orientation.y << " " << pose.orientation.x << std::endl;
+      std::cout << "Orientation: " << pose.orientation.x << " " << pose.orientation.y << " " << pose.orientation.z << std::endl;
     }
 
-    for (int i = 0; i < targets.size(); i++)
+    for (int i = 0; i < model_poses.size(); i++)
     {
       moveit_msgs::CollisionObject collision_object;
       collision_object.header.frame_id = move_group->getPlanningFrame();
@@ -134,11 +118,11 @@ public:
       geometry_msgs::Pose box_pose;
 
       box_pose.orientation.w = 1.0;
-      box_pose.position.x = targets[i].position.x;
-      box_pose.position.y = targets[i].position.y;
-      box_pose.position.z = targets[i].position.z;
+      box_pose.position.x = model_poses[i].position.x;
+      box_pose.position.y = model_poses[i].position.y;
+      box_pose.position.z = model_poses[i].position.z;
 
-      box_pose.orientation = targets[i].orientation;
+      box_pose.orientation = model_poses[i].orientation;
 
       collision_object.primitives.push_back(primitive);
       collision_object.primitive_poses.push_back(box_pose);
@@ -146,17 +130,18 @@ public:
 
       collision_objects.push_back(collision_object);
 
-      moveit_msgs::ObjectColor object_color;
+      /* moveit_msgs::ObjectColor object_color;
       object_color.id = collision_object.id;
       object_color.color.r = 239;
       object_color.color.g = 41;
       object_color.color.b = 41;
       object_color.color.a = 1;
 
-      objects_color.push_back(object_color);
+      objects_color.push_back(object_color);*/
     }
 
-    planning_scene_interface.addCollisionObjects(collision_objects, objects_color);
+    //planning_scene_interface.addCollisionObjects(collision_objects, objects_color);
+    planning_scene_interface.addCollisionObjects(collision_objects);
   }
 
   void pick_and_place()
@@ -180,11 +165,25 @@ private:
   std::vector<moveit_msgs::CollisionObject> collision_objects;
   std::vector<moveit_msgs::ObjectColor> objects_color;
   bool detected;
+  std::vector<geometry_msgs::Pose> model_poses;
 
   void getPoses(const geometry_msgs::PoseArray &msgs)
   {
     detected_poses_array = msgs;
     detected = true;
+  }
+
+  void getModelStates(const gazebo_msgs::ModelStates &msgs)
+  {
+    int pos = 0; 
+
+    for(int i = 0; i < msgs.pose.size(); i++){
+      if (msgs.name[i].find("wood", pos) != std::string::npos){
+        detected = true;
+        model_poses.push_back(msgs.pose[i]);
+      }
+    }
+    
   }
 
   /* 0.0 open */
@@ -333,7 +332,7 @@ int main(int argc, char **argv)
   cr35ia arm("arm");
   arm.generate_scene();
   arm.generate_object();
-  arm.pick_and_place();
+  //arm.pick_and_place();
 
   ros::waitForShutdown();
   return 0;
