@@ -2,7 +2,7 @@
 <launch>
   <arg name="paused" default="false"/>
   <arg name="gazebo_gui" default="true"/>
-  <arg name="urdf_path" default="/home/superdiodo/project/src/urdf/assembled_arm_2.0.xacro"/>
+  <arg name="urdf_path" default="$(find fanuc_cr35ia_support)/urdf/assembled_arm_2.0.xacro"/>
 
   <!-- startup simulated world -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">

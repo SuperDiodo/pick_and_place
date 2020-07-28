@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="assembled_robot">
+
+	<!-- THE ROBOT -->
+	<link name="world" />
+
+	<!-- UR from ROS-i repos -->
+	<xacro:include filename="$(find fanuc_cr35ia_support)/urdf/cr35ia.xacro" />
+
+	<!-- Robotiq from Beta Robots fork -->
+	<xacro:include filename="$(find robotiq_2f_140_gripper_visualization)/urdf/robotiq_arg2f_140_model.xacro" />
+
+<joint name="world_joint" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+</joint>
+
+<joint name="gripper_joint" type="fixed">
+    <parent link="link_6"/>
+    <child link="robotiq_arg2f_base_link"/>
+    <origin xyz="0 0 0" rpy="0 1.57075 0" />
+</joint>
+
+
+       <!-- Plugin -->
+       <plugin name="ros_control" filename="libgazebo_ros_control.so" />
+
+</robot>
