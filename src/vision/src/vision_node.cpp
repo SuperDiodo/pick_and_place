@@ -99,6 +99,7 @@ public:
     }
 	
 		//cv::Mat img = cv::imread("/home/vito/Moveit_ROS/src/vision/src/test.jpg", 0);
+		//cv::cvtColor(img, gray, cv::COLOR_RGB2GRAY);
 		cv::cvtColor(cv_ptr->image, gray, cv::COLOR_RGB2GRAY);
 		findCoordinates(gray);
   }
@@ -117,16 +118,26 @@ public:
 		vector<vector<cv::Point> > contours;
 		findContours( canny, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE );
 		
+		vector<vector<cv::Point> > contours_poly( contours.size() );
+		vector<cv::Rect> boundRect( contours.size() );
+
 		for( size_t i = 0; i < contours.size(); i++ )
 		{
 				// find centroids
 				cv::Moments mu = cv::moments(contours[i]);
 				cv::Point centroid = cv::Point (mu.m10/mu.m00 , mu.m01/mu.m00);
 				
-				// find (x,y) in global frame
+				// find bounding box
+				approxPolyDP( contours[i], contours_poly[i], 3, true );
+				boundRect[i] = boundingRect( contours_poly[i] );
+				//rectangle( canny, boundRect[i].tl(), boundRect[i].br(), 255, 2 );
+				
+
+				// find (x,y,yaw) in global frame
 				p.position.x = (centroid.y*m_per_px)+x_camera_frame; // X in global frame
 				p.position.y = (centroid.x*m_per_px)+y_camera_frame;	// Y in global frame
 				p.position.z = 1.04;
+				p.orientation.z = findOrientation(canny, boundRect[i]);
 				pose_array.poses.push_back(p);
 
 				circle( thres, centroid, 2, cv::Scalar(0), 4 );
@@ -140,12 +151,75 @@ public:
 		pose_pub.publish(pose_array);
 		pose_array.poses.clear();
 
-		/*
+		
 		cv::namedWindow(OPENCV_WINDOW);
-		cv::imshow(OPENCV_WINDOW, thres);
+		cv::imshow(OPENCV_WINDOW, canny);
+		cv::waitKey(0);
+		
+	
+	}
+
+	float findOrientation(cv::Mat img, cv::Rect roi)
+	{
+		/*
+			NOTE: the angle returned isn't the effective yaw of the object, but the anghe
+			at which end effector should grasp the object (long side of the object).
+		*/
+		cv::Mat background = cv::Mat::zeros(img.size(), CV_8UC1);
+		cv::Mat mask = cv::Mat(roi.size(), CV_8UC1, 255);
+		mask.copyTo(background(roi));
+
+		// img containing only one object
+		cv::Mat img_mask = img.mul(background);
+				
+		// find orientation
+		float angle_step;
+		if(mask.rows < 100 && mask.cols < 100)
+		{
+			angle_step = 3*(CV_PI/180);
+		} else {
+			angle_step = 2*(CV_PI/180);
+		}
+		cv::Mat lines;
+		cout << "rows: " << mask.rows << " cols " << mask.cols << endl;
+		cv::HoughLines(img_mask, lines, 1, angle_step, round(max(mask.rows,mask.cols)/2), 0, 0 );
+		cout << "LINES = " << endl << " "  << lines << endl << endl;
+		
+		// draw lines
+		float theta = 0.0;
+		for( int i = 0; i < lines.rows; i++ )
+    {
+        float rho = lines.at<float>(i,0);
+				theta = lines.at<float>(i,1);
+        cv::Point pt1, pt2;
+        double a = cos(theta), b = sin(theta);
+        double x0 = a*rho, y0 = b*rho;
+        pt1.x = cvRound(x0 + 1000*(-b));
+        pt1.y = cvRound(y0 + 1000*(a));
+        pt2.x = cvRound(x0 - 1000*(-b));
+        pt2.y = cvRound(y0 - 1000*(a));
+        cv::line( img_mask, pt1, pt2, 190, 1, cv::LINE_AA);
+				
+    }
+		  
+		// --------------
+		
+		// find angle
+		float omega = 0.0;
+		if(theta <= CV_PI/2){
+			omega = CV_PI - (CV_PI/2-theta);
+		} else if (theta <= CV_PI){	
+			omega = CV_PI/2 - (CV_PI-theta);
+		}
+		cout << "rad " << CV_PI-omega << " deg " << omega/(CV_PI/180) << endl;
+		return omega;
+		
+/*
+		cv::namedWindow(OPENCV_WINDOW);
+		cv::imshow(OPENCV_WINDOW, img_mask);
 		cv::waitKey(0);
 */
-	
+		
 	}
 };
 
