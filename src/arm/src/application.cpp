@@ -178,7 +178,7 @@ private:
     int pos = 0; 
 
     for(int i = 0; i < msgs.pose.size(); i++){
-      if (msgs.name[i].find("wood", pos) != std::string::npos){
+      if (msgs.name[i].find("target", pos) != std::string::npos){
         detected = true;
         model_poses.push_back(msgs.pose[i]);
       }

@@ -17,11 +17,7 @@
 
   <!-- Change the controller type of gripper from position to effort -->
   <arg name="use_effort_gripper" default="false" />
-	<!--
-  <include file="$(find crane_x7_control)/launch/crane_x7_fake_control.launch">
-    <arg name="use_effort_gripper" value="$(arg use_effort_gripper)" />
-  </include>
-	-->
+
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find vision)/worlds/table.world"/>
     <arg name="debug" value="$(arg gazebo_debug)" />
@@ -31,6 +27,6 @@
     <arg name="headless" value="$(arg headless)"/>
   </include>
 
-  
+<node pkg="vision" type="spawn" name="spawn"/>
 
 </launch>

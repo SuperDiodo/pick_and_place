@@ -1284,5 +1284,23 @@
       <allow_auto_disable>1</allow_auto_disable>
       <pose frame=''>2 0 3 -0 1.57 3.14</pose>
     </model>
+
+    <population name="population">
+      <model name="target">
+        <include>
+          <static>false</static>
+          <uri>model://target</uri>
+        </include>
+      </model>
+      <pose>2 0 0.85 0 0 0</pose>
+      <box>
+        <size>1.6 2 0.001</size>
+      </box>
+      <model_count>5</model_count>
+      <distribution>
+        <type>uniform</type>
+      </distribution>
+    </population>
+
   </world>
 </sdf>

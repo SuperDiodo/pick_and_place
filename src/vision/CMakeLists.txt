@@ -139,6 +139,10 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(vision_node src/vision_node.cpp)
 
+add_executable(spawn src/spawn.cpp)
+target_link_libraries(spawn ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS spawn DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
