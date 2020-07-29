@@ -33,9 +33,11 @@ class ImageConverter
 	cv::Mat drawing;
 
 	// x and y coordinater of camera frame wrt global frame
-	float x_camera_frame = -0.1033;
-	float y_camera_frame = -0.5660;
-	float m_width = 1.12; // how many meters in the width of the image
+	float x_camera_frame = 1.087;
+	float y_camera_frame = -1.221;
+	float z_surface = 0.84;
+	float m_width = 2.38; // how many meters in the width of the image
+	float m_height = 1.75;
 
 public:
   ImageConverter(): it(nh)
@@ -136,16 +138,15 @@ public:
 				// find (x,y,yaw) in global frame
 				p.position.x = (centroid.y*m_per_px)+x_camera_frame; // X in global frame
 				p.position.y = (centroid.x*m_per_px)+y_camera_frame;	// Y in global frame
-				p.position.z = 1.04;
+				p.position.z = z_surface;
 				p.orientation.z = findOrientation(canny, boundRect[i]);
 				pose_array.poses.push_back(p);
 
 				circle( thres, centroid, 2, cv::Scalar(0), 4 );
-				cout << "X " << pose_array.poses[i].position.x << " Y " << pose_array.poses[i].position.y << endl;
+				cout << "X " << pose_array.poses[i].position.x << " Y " << pose_array.poses[i].position.y << " Yaw " << pose_array.poses[i].orientation.z << endl;
 		}
 
 		// setup PoseArray message header
-		cout << "TIME " << ros::Time::now() << endl;
 		pose_array.header.stamp = ros::Time::now();
 		pose_array.header.frame_id = "map";
 		pose_pub.publish(pose_array);
@@ -181,11 +182,11 @@ public:
 			angle_step = 2*(CV_PI/180);
 		}
 		cv::Mat lines;
-		cout << "rows: " << mask.rows << " cols " << mask.cols << endl;
 		cv::HoughLines(img_mask, lines, 1, angle_step, round(max(mask.rows,mask.cols)/2), 0, 0 );
-		cout << "LINES = " << endl << " "  << lines << endl << endl;
 		
 		// draw lines
+		// theta is the angle (radians wrt x axis in camera frame) of the line perpendicular
+		// to the longest lateral surface of the object
 		float theta = 0.0;
 		for( int i = 0; i < lines.rows; i++ )
     {
@@ -204,7 +205,7 @@ public:
 		  
 		// --------------
 		
-		// find angle
+		// omega is the angle between the longest lateral surface of the object and x axis (camera frame)
 		float omega = 0.0;
 		if(theta <= CV_PI/2){
 			omega = CV_PI - (CV_PI/2-theta);
