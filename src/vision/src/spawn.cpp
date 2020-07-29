@@ -29,7 +29,6 @@ int main(int argc, char **argv)
     ros::Duration duration(1. / 24.);
 
     /* wait for a pose */
-    //if (msgs.name[i].find("target", pos) != std::string::npos)
     while (detected == false)
     {
         ros::spinOnce();

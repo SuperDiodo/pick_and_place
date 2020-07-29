@@ -19,7 +19,8 @@ public:
   {
     move_group = new moveit::planning_interface::MoveGroupInterface(planning_group);
     move_group->setPlanningTime(45.0);
-    detected = false;
+    detected_poses = false;
+    detected_model = false;
   }
 
   void generate_scene()
@@ -81,7 +82,7 @@ public:
     ros::Subscriber pose_sub = ps.subscribe("/gazebo/model_states", 1, &cr35ia::getModelStates, this);
 
     /* wait for a pose */
-    while (detected == false)
+    while (detected_model == false)
     {
       std::cout << "No pose detected" << std::endl;
       usleep(500000);
@@ -144,6 +145,30 @@ public:
     planning_scene_interface.addCollisionObjects(collision_objects);
   }
 
+  void set_targets(std::string topic){
+    ros::NodeHandle ps;
+    ros::Subscriber pose_sub = ps.subscribe(topic, 10, &cr35ia::getPoses, this);
+
+    /* wait for a pose */
+    while (detected_poses == false)
+    {
+      std::cout << "No pose detected" << std::endl;
+      usleep(500000);
+    }
+
+    ps.shutdown();
+
+    std::cout << "Target poses: " << std::endl;
+    for (int i = 0; i < pose_array.poses.size(); i++)
+    {
+      std::cout << "X: " << pose_array.poses[i].position.x << std::endl;
+      std::cout << "Y: " << pose_array.poses[i].position.y << std::endl;
+      std::cout << "Z: " << pose_array.poses[i].position.z << std::endl;
+      std::cout << "Orientation: " << pose_array.poses[i].orientation.x << " " << pose_array.poses[i].orientation.y << " " << pose_array.poses[i].orientation.z << std::endl;
+      targets.push_back(pose_array.poses[i]);
+    }
+  }
+
   void pick_and_place()
   {
     for (int i = 0; i < targets.size(); i++)
@@ -160,17 +185,17 @@ private:
   trajectory_msgs::JointTrajectory trajectory;
   moveit::planning_interface::MoveGroupInterface *move_group;
   moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
-  geometry_msgs::PoseArray detected_poses_array;
+  geometry_msgs::PoseArray pose_array;
   std::vector<geometry_msgs::Pose> targets;
   std::vector<moveit_msgs::CollisionObject> collision_objects;
   std::vector<moveit_msgs::ObjectColor> objects_color;
-  bool detected;
+  bool detected_poses, detected_model;
   std::vector<geometry_msgs::Pose> model_poses;
 
   void getPoses(const geometry_msgs::PoseArray &msgs)
   {
-    detected_poses_array = msgs;
-    detected = true;
+    pose_array = msgs;
+    detected_poses = true;
   }
 
   void getModelStates(const gazebo_msgs::ModelStates &msgs)
@@ -179,7 +204,7 @@ private:
 
     for(int i = 0; i < msgs.pose.size(); i++){
       if (msgs.name[i].find("target", pos) != std::string::npos){
-        detected = true;
+        detected_model = true;
         model_poses.push_back(msgs.pose[i]);
       }
     }
@@ -332,7 +357,8 @@ int main(int argc, char **argv)
   cr35ia arm("arm");
   arm.generate_scene();
   arm.generate_object();
-  //arm.pick_and_place();
+  arm.set_targets("/poses");
+  arm.pick_and_place();
 
   ros::waitForShutdown();
   return 0;
