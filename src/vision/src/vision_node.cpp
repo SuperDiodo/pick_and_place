@@ -34,9 +34,9 @@ class ImageConverter
 
 	// x and y coordinater of camera frame wrt global frame
 	float x_camera_frame = 1.087;
-	float y_camera_frame = -1.221;
+	float y_camera_frame = -1.241;
 	float z_surface = 0.84;
-	float m_width = 2.38; // how many meters in the width of the image
+	float m_width = 2.45; // how many meters in the width of the image
 	float m_height = 1.75;
 
 public:
@@ -44,8 +44,8 @@ public:
   {
 		this->cloud = 0;
     // Subscrive to input image and point cloud msg, and pose array in output
-    image_sub = it.subscribe("/camera/color/image_raw", 1, &ImageConverter::imageCb, this);
-		//point_sub = nh.subscribe<sensor_msgs::PointCloud2>("/camera/depth/points", 1, &ImageConverter::processCloud, this);
+		point_sub = nh.subscribe<sensor_msgs::PointCloud2>("/camera/depth/points", 1, &ImageConverter::processCloud, this);
+		image_sub = it.subscribe("/camera/color/image_raw", 1, &ImageConverter::imageCb, this);
 		pose_pub = nh.advertise<geometry_msgs::PoseArray>("/poses",1);
   }
 
@@ -58,9 +58,37 @@ public:
 	{
 		// store the new pointcloud, we will use it later
 		this->cloud = cloud;
-	/*
-		int u = 174;
-		int v = 219;
+		/*
+		int u = 250;
+		int v = 250;
+		// get width and height of 2D point cloud data
+    int width = this->cloud->width;
+    int height = this->cloud->height;
+
+		// Convert from u (column / width), v (row/height) to position in array
+    // where X,Y,Z data starts
+    int arrayPosition = v*this->cloud->row_step + u*this->cloud->point_step;
+
+		// compute position in array where x,y,z data start
+    int arrayPosX = arrayPosition + this->cloud->fields[0].offset; // X has an offset of 0
+    int arrayPosY = arrayPosition + this->cloud->fields[1].offset; // Y has an offset of 4
+    int arrayPosZ = arrayPosition + this->cloud->fields[2].offset; // Z has an offset of 8
+
+		float X = 0.0; // Y in global frame
+    float Y = 0.0;	// X (world) = X(world) kinect - sgn(Y)
+    float Z = 0.0;
+
+    memcpy(&X, &this->cloud->data[arrayPosX], sizeof(float));
+    memcpy(&Y, &this->cloud->data[arrayPosY], sizeof(float));
+    memcpy(&Z, &this->cloud->data[arrayPosZ], sizeof(float));
+
+		cout << "XC " << X << " YC " << Y << " ZC " << Z << endl;
+		*/
+	}
+	
+	// find coordinates through pc
+	void findCoordinatesPC(int u, int v)
+	{
 		// get width and height of 2D point cloud data
     int width = this->cloud->width;
     int height = this->cloud->height;
@@ -83,7 +111,6 @@ public:
     memcpy(&Z, &this->cloud->data[arrayPosZ], sizeof(float));
 
 		cout << "X " << X << " Y " << Y << " Z " << Z << endl;
-		*/
 	}
 	
   void imageCb(const sensor_msgs::ImageConstPtr& msg)
@@ -143,7 +170,11 @@ public:
 				pose_array.poses.push_back(p);
 
 				circle( thres, centroid, 2, cv::Scalar(0), 4 );
-				cout << "X " << pose_array.poses[i].position.x << " Y " << pose_array.poses[i].position.y << " Yaw " << pose_array.poses[i].orientation.z << endl;
+				cout << " ----------------- " << endl;
+				cout << " X " << pose_array.poses[i].position.x << " Y " << pose_array.poses[i].position.y << " Yaw " << pose_array.poses[i].orientation.z << endl;
+				//cout << " point cloud " << endl;
+				//if(this->cloud != NULL)
+				//	findCoordinatesPC(centroid.x, centroid.y);
 		}
 
 		// setup PoseArray message header
@@ -154,7 +185,7 @@ public:
 
 		
 		cv::namedWindow(OPENCV_WINDOW);
-		cv::imshow(OPENCV_WINDOW, canny);
+		cv::imshow(OPENCV_WINDOW, thres);
 		cv::waitKey(0);
 		
 	
