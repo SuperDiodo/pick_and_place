@@ -315,16 +315,19 @@ private:
 
     for (int k = 1; k <= 2; k++)
     {
-      tf2::Quaternion orientation;
-      tf2::fromMsg(targets[target_id].orientation, orientation);
+      for (int j = 1; j <= 2; j++)
+      {
+        tf2::Quaternion orientation;
+        tf2::fromMsg(targets[target_id].orientation, orientation);
 
-      /* set correct angles for each target pose */
-      double roll, pitch, yaw;
-      tf2::Matrix3x3 matrix_orientation(orientation);
-      matrix_orientation.getRPY(roll, pitch, yaw);
-      orientation.setRPY(roll, pitch + pow(-1, k) * M_PI / 2, yaw);
-      grasp.grasp_pose.pose.orientation = tf2::toMsg(orientation);
-      grasps.push_back(grasp);
+        /* set correct angles for each target pose */
+        double roll, pitch, yaw;
+        tf2::Matrix3x3 matrix_orientation(orientation);
+        matrix_orientation.getRPY(roll, pitch, yaw);
+        orientation.setRPY(roll, pitch + pow(-1, k) * M_PI / 2, yaw + pow(-1, j) * M_PI / 2);
+        grasp.grasp_pose.pose.orientation = tf2::toMsg(orientation);
+        grasps.push_back(grasp);
+      }
     }
 
     std::cout << "Generated " << grasps.size() << " grasp poses" << std::endl;

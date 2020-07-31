@@ -26,7 +26,7 @@ class ImageConverter
 	geometry_msgs::PoseArray pose_array;
 	ros::Publisher pose_pub;
 
-	float x_camera = 2.00;
+	float x_camera = 1.5;
 	cv::Mat gray;
 	cv::Mat copy;
 	cv::Mat thres;
@@ -131,6 +131,7 @@ public:
 
 		for( size_t i = 0; i < obj.centroids.size(); i++ )
 		{
+				cout << " ------- OBJ " << i << " ----------" << endl;
 				// find (x,y,yaw) in global frame
 				geometry_msgs::Pose p;
 				p = findCoordinatesPC(obj.centroids[i].x, obj.centroids[i].y);
@@ -138,9 +139,9 @@ public:
 				pose_array.poses.push_back(p);
 
 				circle( thres, obj.centroids[i], 2, cv::Scalar(0), 4 );
-				cout << " ----------------- " << endl;
-				cout << " X " << pose_array.poses[i].position.x << " Y " << pose_array.poses[i].position.y << " Yaw " << pose_array.poses[i].orientation.z << endl;
 
+				cout << " X " << pose_array.poses[i].position.x << " Y " << pose_array.poses[i].position.y << " Yaw " << pose_array.poses[i].orientation.z << endl;
+				cout << "---------------" << endl;
 		}
 
 		// setup PoseArray message header
@@ -149,10 +150,11 @@ public:
 		pose_pub.publish(pose_array);
 		pose_array.poses.clear();
 
+		/*
 		cv::namedWindow(OPENCV_WINDOW);
 		cv::imshow(OPENCV_WINDOW, thres);
 		cv::waitKey(0);
-
+		*/
 
 	}
 
@@ -184,10 +186,12 @@ public:
 		// theta is the angle (radians wrt x axis in camera frame) of the line perpendicular
 		// to the longest lateral surface of the object
 		float theta = 0.0;
+		float alpha = 0.0;
 		for( int i = 0; i < lines.rows; i++ )
     {
         float rho = lines.at<float>(i,0);
 				theta = lines.at<float>(i,1);
+				alpha += theta;
         cv::Point pt1, pt2;
         double a = cos(theta), b = sin(theta);
         double x0 = a*rho, y0 = b*rho;
@@ -198,17 +202,24 @@ public:
         cv::line( img_mask, pt1, pt2, 190, 1, cv::LINE_AA);
 
     }
-
+		alpha = alpha/lines.rows;
+		cout << lines << endl;
+		cout << "alpha " << alpha << endl;
 		// --------------
 
 		// omega is the angle between the longest lateral surface of the object and x axis (camera frame)
 		float omega = 0.0;
 		if(theta <= CV_PI/2){
-			omega = CV_PI - (CV_PI/2-theta);
+			omega = CV_PI - (CV_PI/2-alpha);
 		} else if (theta <= CV_PI){
-			omega = CV_PI/2 - (CV_PI-theta);
+			omega = CV_PI/2 - (CV_PI-alpha);
 		}
-		cout << "rad " << CV_PI-omega << " deg " << omega/(CV_PI/180) << endl;
+		//cout << "rad " << CV_PI-omega << " deg " << omega/(CV_PI/180) << " yaw " << omega <<endl;
+/*
+		cv::namedWindow(OPENCV_WINDOW);
+		cv::imshow(OPENCV_WINDOW, img_mask);
+		cv::waitKey(0);
+*/
 		return omega;
 
 /*

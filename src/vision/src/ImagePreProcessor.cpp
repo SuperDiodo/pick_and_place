@@ -89,7 +89,6 @@ public:
 		obj objects;
 		vector<vector<cv::Point> > contours;
 		findContours( canny, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE );
-
 		vector<vector<cv::Point> > contours_poly( contours.size() );
 		vector<cv::Rect> boundRect( contours.size() );
 		vector<cv::Point> centroids( contours.size() );

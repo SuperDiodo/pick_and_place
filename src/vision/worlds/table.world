@@ -1,4 +1,3 @@
-<?xml version="1.0" ?>
 <sdf version='1.6'>
   <world name='default'>
     <light name='sun' type='directional'>
@@ -1046,57 +1045,57 @@
       <pose frame=''>-0.884727 0.03419 0 0 -0 0</pose>
     </model>
     <state world_name='default'>
-      <sim_time>173 463000000</sim_time>
-      <real_time>65 348227397</real_time>
-      <wall_time>1596179355 148027086</wall_time>
-      <iterations>65221</iterations>
+      <sim_time>219 948000000</sim_time>
+      <real_time>31 918875984</real_time>
+      <wall_time>1596191183 317881952</wall_time>
+      <iterations>31773</iterations>
       <model name='cr35ia_joints'>
-        <pose frame=''>0.000185 0.000122 1.62357 0 0 -9.2e-05</pose>
+        <pose frame=''>-0.538076 0.000272 1.62356 0 0 -0.000141</pose>
         <scale>1 1 1</scale>
         <model name='cr35ia'>
-          <pose frame=''>0.000185 0.000122 1.62357 0 0 -9.2e-05</pose>
+          <pose frame=''>-0.538076 0.000272 1.62356 0 0 -0.000141</pose>
           <scale>1 1 1</scale>
           <link name='link_0'>
-            <pose frame=''>0.317308 0.096602 0 0 0 -9.2e-05</pose>
+            <pose frame=''>-0.220949 0.096736 -9e-06 0 0 -0.000141</pose>
             <velocity>0 0 0 0 -0 0</velocity>
-            <acceleration>-0.000791 -0.084069 18.7481 0.931466 -0.106548 -0.037815</acceleration>
-            <wrench>-0.000791 -0.084069 18.7481 0 -0 0</wrench>
+            <acceleration>0.000795 0.084069 -9.90951 -1.08898 0.081699 0.037814</acceleration>
+            <wrench>0.000795 0.084069 -9.90951 0 -0 0</wrench>
           </link>
           <link name='link_1'>
-            <pose frame=''>0.275074 0.068218 1.14884 -1e-06 0 -9.2e-05</pose>
+            <pose frame=''>-0.263184 0.068354 1.14883 -1e-06 -0 -0.000141</pose>
             <velocity>0 0 0 0 -0 0</velocity>
-            <acceleration>0.565789 -0.025624 18.6727 0.586095 0.099424 -0.032206</acceleration>
-            <wrench>0.565789 -0.025624 18.6727 0 -0 0</wrench>
+            <acceleration>0.001459 0.105682 -9.87902 -0.704294 0.051767 0.031699</acceleration>
+            <wrench>0.001459 0.105682 -9.87902 0 -0 0</wrench>
           </link>
           <link name='link_2'>
-            <pose frame=''>0.310795 0.00933 1.05611 -1e-06 -0.009396 -9.2e-05</pose>
+            <pose frame=''>-0.227466 0.009464 1.0561 -1e-06 -0.009397 -0.000141</pose>
             <velocity>0 0 0 0 -0 0</velocity>
-            <acceleration>0.542724 -0.012495 18.5572 0.371955 0.227675 -0.017847</acceleration>
-            <wrench>0.542724 -0.012495 18.5572 0 -0 0</wrench>
+            <acceleration>0.000887 0.066345 -9.83834 -0.503202 0.020912 0.01435</acceleration>
+            <wrench>0.000887 0.066345 -9.83834 0 -0 0</wrench>
           </link>
           <link name='link_3'>
-            <pose frame=''>0.388533 0.122907 1.81402 -3.14155 -1.52702 3.14146</pose>
+            <pose frame=''>-0.149723 0.123037 1.81401 -3.14155 -1.52702 3.14141</pose>
             <velocity>0 0 0 0 -0 0</velocity>
-            <acceleration>0.897833 0.169562 18.3771 0.112688 0.341448 -0.010697</acceleration>
-            <wrench>0.897833 0.169562 18.3771 0 -0 0</wrench>
+            <acceleration>0.001536 -0.003336 -9.78866 -0.276834 0.002141 0.004337</acceleration>
+            <wrench>0.001536 -0.003336 -9.78866 0 -0 0</wrench>
           </link>
           <link name='link_4'>
-            <pose frame=''>0.387069 0.088498 1.8341 -3.14152 -1.54351 3.14142</pose>
+            <pose frame=''>-0.151189 0.088628 1.83409 -3.14152 -1.54351 3.14138</pose>
             <velocity>0 0 0 0 -0 0</velocity>
-            <acceleration>0.916205 0.197178 18.2865 0.008787 0.373503 -0.008761</acceleration>
-            <wrench>0.916205 0.197178 18.2865 0 -0 0</wrench>
+            <acceleration>0.002146 -0.030755 -9.75544 -0.179204 -0.000974 0.005156</acceleration>
+            <wrench>0.002146 -0.030755 -9.75544 0 -0 0</wrench>
           </link>
           <link name='link_5'>
-            <pose frame=''>0.346923 0.08282 2.68615 -2e-06 1e-06 -0.065609</pose>
+            <pose frame=''>-0.191335 0.082952 2.68614 -2e-06 -0 -0.065658</pose>
             <velocity>0 0 0 0 -0 0</velocity>
-            <acceleration>1.30874 0.440757 18.2199 -0.102959 0.400259 -0.008723</acceleration>
-            <wrench>1.30874 0.440757 18.2199 0 -0 0</wrench>
+            <acceleration>-0.003133 -0.102497 -9.72652 -0.081485 -0.001907 0.005928</acceleration>
+            <wrench>-0.003133 -0.102497 -9.72652 0 -0 0</wrench>
           </link>
           <link name='link_6'>
-            <pose frame=''>0.374378 0.09259 2.78579 -2.4e-05 -1.47683 -6.8e-05</pose>
+            <pose frame=''>-0.163879 0.09272 2.78578 -2.3e-05 -1.47683 -0.000118</pose>
             <velocity>0 0 0 0 -0 0</velocity>
-            <acceleration>1.35685 0.478923 18.1364 -0.126109 0.412024 -0.005364</acceleration>
-            <wrench>1.35685 0.478923 18.1364 0 -0 0</wrench>
+            <acceleration>-0.003689 -0.119508 -9.70251 -0.066089 -0.006031 0.003296</acceleration>
+            <wrench>-0.003689 -0.119508 -9.70251 0 -0 0</wrench>
           </link>
         </model>
       </model>
@@ -1111,45 +1110,45 @@
         </link>
       </model>
       <model name='kinect'>
-        <pose frame=''>2 0 3 -0 1.57 3.14</pose>
+        <pose frame=''>1.5 0 3 0.000796 1.57 3.1408</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>2 0 3 -0 1.57 3.14</pose>
+          <pose frame=''>1.5 0 3 0.000796 1.57 3.1408</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
       <model name='pick_table'>
-        <pose frame=''>1.50007 0.004351 0.399992 0 1.5e-05 -0.000731</pose>
+        <pose frame=''>0.954999 -0.006658 0.399785 0.000143 0 -0.000596</pose>
         <scale>1 1 1</scale>
         <link name='unit_box::link'>
-          <pose frame=''>1.50007 0.004351 0.399992 0 1.5e-05 -0.000731</pose>
+          <pose frame=''>0.954999 -0.006658 0.399785 0.000143 0 -0.000596</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>9.63587 -0.042728 6.23045 0.057595 -0.167957 0.032699</acceleration>
-          <wrench>9.63587 -0.042728 6.23045 0 -0 0</wrench>
+          <acceleration>-0.006291 -9.8 -0 1.83201 -0.038539 -1e-05</acceleration>
+          <wrench>-0.006291 -9.8 -0 0 -0 0</wrench>
         </link>
       </model>
       <model name='place_table'>
-        <pose frame=''>-0.884726 0.034251 0.418738 0 9e-06 0</pose>
+        <pose frame=''>-1.68141 0.034247 0.418738 0 9e-06 0</pose>
         <scale>1 1 1</scale>
         <link name='unit_box::link'>
-          <pose frame=''>-0.884726 0.034251 0.418738 0 9e-06 0</pose>
+          <pose frame=''>-1.68141 0.034247 0.418738 0 9e-06 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0.464206 0.082804 -9.1083 -0.205752 0.908791 -0.01875</acceleration>
-          <wrench>0.464206 0.082804 -9.1083 0 -0 0</wrench>
+          <acceleration>0.464206 -0.082804 -9.1083 0.205752 0.908791 0.01875</acceleration>
+          <wrench>0.464206 -0.082804 -9.1083 0 -0 0</wrench>
         </link>
       </model>
       <light name='sun'>
         <pose frame=''>0 0 10 0 -0 0</pose>
       </light>
       <light name='user_point_light_0'>
-        <pose frame=''>2 -0.4 3 0 -0 0</pose>
+        <pose frame=''>1.5 -0.5 3 0 -0 0</pose>
       </light>
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose frame=''>9.54222 -3.54963 4.88722 0 0.291944 2.61356</pose>
+        <pose frame=''>2.86103 -13.8619 7.09726 0 0.415944 1.54956</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
@@ -1288,7 +1287,7 @@
       <pose frame=''>2 0 3 -0 1.57 3.14</pose>
     </model>
     <light name='user_point_light_0' type='point'>
-      <pose frame=''>-4.11775 -0.077888 1 0 -0 0</pose>
+      <pose frame=''>4.93333 0.4759 1 0 -0 0</pose>
       <diffuse>0.5 0.5 0.5 1</diffuse>
       <specular>0.1 0.1 0.1 1</specular>
       <attenuation>
@@ -1301,7 +1300,7 @@
       <direction>0 0 -1</direction>
     </light>
 
-		<population name="population">
+		<population name="population2">
       <model name="target">
         <include>
           <static>false</static>

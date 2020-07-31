@@ -1,0 +1,19 @@
+<launch>
+
+	<!-- Run Gazebo simulation -->
+  <include file="$(find vision)/launch/scene.launch">
+  </include>
+	
+  <!-- Run Rviz simulation -->
+  <include file="$(find bigger_cr35_config)/launch/demo.launch">
+  </include>
+  
+  <!-- Run grasping application -->
+  <node name="application" pkg="arm" type="application">
+  </node>
+
+	<!-- Run vision application -->
+  <node name="vision" pkg="vision" type="vision_node">
+  </node>
+
+</launch>
