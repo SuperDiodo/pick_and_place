@@ -9,7 +9,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <std_msgs/Float64.h>
-
+#include "ImagePreProcessor.cpp"
 
 using namespace std;
 
@@ -17,32 +17,30 @@ static const std::string OPENCV_WINDOW = "Image window";
 
 class ImageConverter
 {
+	ImagePreProcessor pr;
   ros::NodeHandle nh;
   image_transport::ImageTransport it;
   image_transport::Subscriber image_sub;
 	ros::Subscriber point_sub;
 	sensor_msgs::PointCloud2ConstPtr cloud;
 	geometry_msgs::PoseArray pose_array;
-	geometry_msgs::Pose p;
 	ros::Publisher pose_pub;
 
+	float x_camera = 2.00;
 	cv::Mat gray;
 	cv::Mat copy;
 	cv::Mat thres;
 	cv::Mat canny;
 	cv::Mat drawing;
 
-	// x and y coordinater of camera frame wrt global frame
-	float x_camera_frame = 1.087;
-	float y_camera_frame = -1.241;
+	// the z coordinate is fixed, we can also calculate from PC
 	float z_surface = 0.84;
-	float m_width = 2.45; // how many meters in the width of the image
-	float m_height = 1.75;
 
 public:
   ImageConverter(): it(nh)
   {
-		this->cloud = 0;
+		this->cloud = NULL;
+
     // Subscrive to input image and point cloud msg, and pose array in output
 		point_sub = nh.subscribe<sensor_msgs::PointCloud2>("/camera/depth/points", 1, &ImageConverter::processCloud, this);
 		image_sub = it.subscribe("/camera/color/image_raw", 1, &ImageConverter::imageCb, this);
@@ -58,40 +56,15 @@ public:
 	{
 		// store the new pointcloud, we will use it later
 		this->cloud = cloud;
-		/*
-		int u = 250;
-		int v = 250;
-		// get width and height of 2D point cloud data
-    int width = this->cloud->width;
-    int height = this->cloud->height;
-
-		// Convert from u (column / width), v (row/height) to position in array
-    // where X,Y,Z data starts
-    int arrayPosition = v*this->cloud->row_step + u*this->cloud->point_step;
-
-		// compute position in array where x,y,z data start
-    int arrayPosX = arrayPosition + this->cloud->fields[0].offset; // X has an offset of 0
-    int arrayPosY = arrayPosition + this->cloud->fields[1].offset; // Y has an offset of 4
-    int arrayPosZ = arrayPosition + this->cloud->fields[2].offset; // Z has an offset of 8
-
-		float X = 0.0; // Y in global frame
-    float Y = 0.0;	// X (world) = X(world) kinect - sgn(Y)
-    float Z = 0.0;
-
-    memcpy(&X, &this->cloud->data[arrayPosX], sizeof(float));
-    memcpy(&Y, &this->cloud->data[arrayPosY], sizeof(float));
-    memcpy(&Z, &this->cloud->data[arrayPosZ], sizeof(float));
-
-		cout << "XC " << X << " YC " << Y << " ZC " << Z << endl;
-		*/
 	}
-	
+
 	// find coordinates through pc
-	void findCoordinatesPC(int u, int v)
+	geometry_msgs::Pose findCoordinatesPC(int u, int v)
 	{
 		// get width and height of 2D point cloud data
     int width = this->cloud->width;
     int height = this->cloud->height;
+		geometry_msgs::Pose p;
 
 		// Convert from u (column / width), v (row/height) to position in array
     // where X,Y,Z data starts
@@ -103,18 +76,22 @@ public:
     int arrayPosZ = arrayPosition + this->cloud->fields[2].offset; // Z has an offset of 8
 
 		float X = 0.0; // Y in global frame
-    float Y = 0.0;	// X (world) = X(world) kinect - sgn(Y)
+    float Y = 0.0;
     float Z = 0.0;
 
     memcpy(&X, &this->cloud->data[arrayPosX], sizeof(float));
     memcpy(&Y, &this->cloud->data[arrayPosY], sizeof(float));
     memcpy(&Z, &this->cloud->data[arrayPosZ], sizeof(float));
 
-		cout << "X " << X << " Y " << Y << " Z " << Z << endl;
+		p.position.x = Y+this->x_camera; // X in global frame
+		p.position.y = X;	// Y in global frame
+		p.position.z = z_surface;
+
+		return p;
 	}
-	
+
   void imageCb(const sensor_msgs::ImageConstPtr& msg)
-  {	
+  {
     cv_bridge::CvImagePtr cv_ptr;
     try
     {
@@ -126,55 +103,44 @@ public:
       ROS_ERROR("cv_bridge exception: %s", e.what());
       return;
     }
-	
-		//cv::Mat img = cv::imread("/home/vito/Moveit_ROS/src/vision/src/test.jpg", 0);
-		//cv::cvtColor(img, gray, cv::COLOR_RGB2GRAY);
-		cv::cvtColor(cv_ptr->image, gray, cv::COLOR_RGB2GRAY);
-		findCoordinates(gray);
-  }
 
-	
+		cv::cvtColor(cv_ptr->image, gray, cv::COLOR_RGB2GRAY);
+		if (this->cloud != NULL)
+			findCoordinates(gray);
+  }
 
 	void findCoordinates(cv::Mat img)
 	{
-		// parameter for coordinates conversion
-		float m_per_px = m_width/static_cast<float>(img.cols);
-		float X_loc, Y_loc;
-
 		// find shapes and centers
-		cv::threshold(img, thres, 100, 255, cv::THRESH_BINARY_INV );
-		cv::Canny(img, canny, 100, 200);
-		vector<vector<cv::Point> > contours;
-		findContours( canny, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE );
-		
-		vector<vector<cv::Point> > contours_poly( contours.size() );
-		vector<cv::Rect> boundRect( contours.size() );
+		int threshold = pr.find_peak(gray, 0); // find the peak of histogram for thresholding
+		cv::threshold(img, thres, threshold-10, 255, cv::THRESH_BINARY_INV );
+		cv::Canny(img, canny, 100, 10);
 
-		for( size_t i = 0; i < contours.size(); i++ )
+		// find centers and bounding boxes of objects
+		obj objects;
+		objects = pr.findCentroids(canny);
+
+		// find image with no lateral surfaces
+		thres = pr.filter(gray, objects.boundRects, thres);
+		cv::Canny(thres, canny, 100, 10);
+
+
+
+		obj obj;
+		obj = pr.findCentroids(canny);
+
+		for( size_t i = 0; i < obj.centroids.size(); i++ )
 		{
-				// find centroids
-				cv::Moments mu = cv::moments(contours[i]);
-				cv::Point centroid = cv::Point (mu.m10/mu.m00 , mu.m01/mu.m00);
-				
-				// find bounding box
-				approxPolyDP( contours[i], contours_poly[i], 3, true );
-				boundRect[i] = boundingRect( contours_poly[i] );
-				//rectangle( canny, boundRect[i].tl(), boundRect[i].br(), 255, 2 );
-				
-
 				// find (x,y,yaw) in global frame
-				p.position.x = (centroid.y*m_per_px)+x_camera_frame; // X in global frame
-				p.position.y = (centroid.x*m_per_px)+y_camera_frame;	// Y in global frame
-				p.position.z = z_surface;
-				p.orientation.z = findOrientation(canny, boundRect[i]);
+				geometry_msgs::Pose p;
+				p = findCoordinatesPC(obj.centroids[i].x, obj.centroids[i].y);
+				p.orientation.z = findOrientation(canny, obj.boundRects[i]);
 				pose_array.poses.push_back(p);
 
-				circle( thres, centroid, 2, cv::Scalar(0), 4 );
+				circle( thres, obj.centroids[i], 2, cv::Scalar(0), 4 );
 				cout << " ----------------- " << endl;
 				cout << " X " << pose_array.poses[i].position.x << " Y " << pose_array.poses[i].position.y << " Yaw " << pose_array.poses[i].orientation.z << endl;
-				//cout << " point cloud " << endl;
-				//if(this->cloud != NULL)
-				//	findCoordinatesPC(centroid.x, centroid.y);
+
 		}
 
 		// setup PoseArray message header
@@ -183,12 +149,11 @@ public:
 		pose_pub.publish(pose_array);
 		pose_array.poses.clear();
 
-		
 		cv::namedWindow(OPENCV_WINDOW);
 		cv::imshow(OPENCV_WINDOW, thres);
 		cv::waitKey(0);
-		
-	
+
+
 	}
 
 	float findOrientation(cv::Mat img, cv::Rect roi)
@@ -203,7 +168,7 @@ public:
 
 		// img containing only one object
 		cv::Mat img_mask = img.mul(background);
-				
+
 		// find orientation
 		float angle_step;
 		if(mask.rows < 100 && mask.cols < 100)
@@ -214,7 +179,7 @@ public:
 		}
 		cv::Mat lines;
 		cv::HoughLines(img_mask, lines, 1, angle_step, round(max(mask.rows,mask.cols)/2), 0, 0 );
-		
+
 		// draw lines
 		// theta is the angle (radians wrt x axis in camera frame) of the line perpendicular
 		// to the longest lateral surface of the object
@@ -231,27 +196,27 @@ public:
         pt2.x = cvRound(x0 - 1000*(-b));
         pt2.y = cvRound(y0 - 1000*(a));
         cv::line( img_mask, pt1, pt2, 190, 1, cv::LINE_AA);
-				
+
     }
-		  
+
 		// --------------
-		
+
 		// omega is the angle between the longest lateral surface of the object and x axis (camera frame)
 		float omega = 0.0;
 		if(theta <= CV_PI/2){
 			omega = CV_PI - (CV_PI/2-theta);
-		} else if (theta <= CV_PI){	
+		} else if (theta <= CV_PI){
 			omega = CV_PI/2 - (CV_PI-theta);
 		}
 		cout << "rad " << CV_PI-omega << " deg " << omega/(CV_PI/180) << endl;
 		return omega;
-		
+
 /*
 		cv::namedWindow(OPENCV_WINDOW);
 		cv::imshow(OPENCV_WINDOW, img_mask);
 		cv::waitKey(0);
 */
-		
+
 	}
 };
 
