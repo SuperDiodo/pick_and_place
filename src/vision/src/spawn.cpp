@@ -64,7 +64,7 @@ int main(int argc, char **argv)
             objstate.request.model_state.pose = model.pose[i];
 
             tf2::Quaternion orientation;
-            orientation.setRPY(0, 0, fRand(-3.14, 3.14));
+            orientation.setRPY(0, 0, fRand(-0.75, 0.75));
             objstate.request.model_state.pose.orientation = tf2::toMsg(orientation);
 
             objstate.request.model_state.twist.linear.x = 0.0;
