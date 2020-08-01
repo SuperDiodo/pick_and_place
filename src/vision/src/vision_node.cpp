@@ -10,6 +10,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <std_msgs/Float64.h>
 #include "ImagePreProcessor.cpp"
+#include <tf/transform_datatypes.h>
 
 using namespace std;
 
@@ -135,7 +136,11 @@ public:
 				// find (x,y,yaw) in global frame
 				geometry_msgs::Pose p;
 				p = findCoordinatesPC(obj.centroids[i].x, obj.centroids[i].y);
-				p.orientation.z = findOrientation(canny, obj.boundRects[i]);
+
+				tf::Quaternion orientation;
+				orientation.setRPY(0, 0, findOrientation(canny, obj.boundRects[i]));
+
+				quaternionTFToMsg(orientation, p.orientation);
 				pose_array.poses.push_back(p);
 
 				circle( thres, obj.centroids[i], 2, cv::Scalar(0), 4 );

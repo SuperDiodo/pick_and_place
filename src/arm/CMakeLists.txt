@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(arm)
 
 find_package(catkin REQUIRED COMPONENTS
-      roscpp
+    roscpp
     moveit_ros_planning_interface
     pcl_conversions 
     pcl_ros

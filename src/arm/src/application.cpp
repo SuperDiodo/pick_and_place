@@ -5,6 +5,7 @@
 #include <geometry_msgs/PoseArray.h>
 #include <gazebo_msgs/ModelStates.h>
 #include <unistd.h>
+#include <tf/transform_datatypes.h>
 
 /* generate random double in a range */
 double fRand(double fMin, double fMax)
@@ -235,6 +236,7 @@ private:
             targets.push_back(pose_array.poses[i]);
 
             name++;
+            break;
           }
         }
       }
@@ -275,7 +277,7 @@ private:
       grasp.grasp_posture.joint_names[0] = "finger_joint";
       grasp.grasp_posture.points.resize(1);
       grasp.grasp_posture.points[0].positions.resize(1);
-      grasp.grasp_posture.points[0].positions[0] = 0.3;
+      grasp.grasp_posture.points[0].positions[0] = 0.275;
       grasp.grasp_posture.points[0].time_from_start = ros::Duration(0.5);
     }
     else
@@ -298,7 +300,7 @@ private:
 
     grasp.grasp_pose.pose.position.x = targets[target_id].position.x;
     grasp.grasp_pose.pose.position.y = targets[target_id].position.y;
-    grasp.grasp_pose.pose.position.z = targets[target_id].position.z + 0.25;
+    grasp.grasp_pose.pose.position.z = targets[target_id].position.z + 0.2;
 
     grasp.pre_grasp_approach.direction.header.frame_id = "base_link";
     grasp.pre_grasp_approach.direction.vector.z = -1.0;
@@ -317,15 +319,19 @@ private:
     {
       for (int j = 1; j <= 2; j++)
       {
-        tf2::Quaternion orientation;
-        tf2::fromMsg(targets[target_id].orientation, orientation);
+        tf::Quaternion orientation;
+        quaternionMsgToTF(targets[target_id].orientation, orientation);
 
-        /* set correct angles for each target pose */
-        double roll, pitch, yaw;
-        tf2::Matrix3x3 matrix_orientation(orientation);
-        matrix_orientation.getRPY(roll, pitch, yaw);
-        orientation.setRPY(roll, pitch + pow(-1, k) * M_PI / 2, yaw + pow(-1, j) * M_PI / 2);
-        grasp.grasp_pose.pose.orientation = tf2::toMsg(orientation);
+        tf::Matrix3x3 matrix(orientation);
+
+        double yaw, pitch, roll;
+        matrix.getEulerYPR(yaw, pitch, roll);
+        std::cout << "yaw: " << yaw << std::endl;
+        std::cout << "pitch: " << pitch << std::endl;
+        std::cout << "roll: " << roll << std::endl;
+
+        orientation.setRPY(0, pow(-1, j) * M_PI / 2, pow(-1, k) * M_PI / 2 - yaw);
+        quaternionTFToMsg(orientation, grasp.grasp_pose.pose.orientation);
         grasps.push_back(grasp);
       }
     }
