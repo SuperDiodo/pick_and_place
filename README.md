@@ -10,11 +10,27 @@ The kinect will publish the detected poses into the ```\poses``` topic. The exec
 
 ![rviz](https://github.com/SuperDiodo/pick_and_place/blob/master/images/rviz_image.png)
 
+You can see the video here:
+
+[![Watch the video](https://img.youtube.com/vi/DumeUdD6gvw/hqdefault.jpg)](https://www.youtube.com/watch?v=DumeUdD6gvw)
 
 
 ### Start the simulation
 
-Open a terminal tab or window for each file:
+The project was developed in Ubuntu 18.04, with ROS melodic.
+
+1. Install file:
+   1. **[ROS](http://wiki.ros.org/melodic/Installation)** 
+   2. **[MoveIt!](https://moveit.ros.org/install/)**
+   3. **[OpenCV](https://wiki.ros.org/vision_opencv)**: ```sudo apt-get install ros-melodic-vision-opencv```.
+
+2. Drag the files in the **utils** folder directly in the gazebo models folder.
+
+3. Launch!
+
+   
+
+For a simplest launch just digit in terminal ```roslaunch bigger_cr35_config simulation.launch```, or type in  a terminal tab or window for each file:
 
 1. ```roslaunch vision scene.launch```: this will start gazebo.
 2.  ``` roslaunch bigger_cr35_config demo.launch```: this will start rviz.
@@ -25,9 +41,7 @@ Open a terminal tab or window for each file:
 
 ### Authors
 
-**Alessio Saccuti**, master degree student in computer engineering, a.s@gmail.com
+**Alessio Saccuti**, master degree student in computer engineering, alessio.saccuti@gmail.com.
 
-**Vito Cornettone**, master degree student in computer engineering, donvito.cornettone@crema.com
-
-
+**Vito FIlomeno**, master degree student in computer engineering, filomeno.vito@gmail.com.
 

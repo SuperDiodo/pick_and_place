@@ -1300,16 +1300,16 @@
       <direction>0 0 -1</direction>
     </light>
 
-		<population name="population2">
+    <population name="population">
       <model name="target">
         <include>
           <static>false</static>
           <uri>model://target</uri>
         </include>
       </model>
-      <pose>1.4 0 0.855 0 0 0</pose>
+      <pose>1.2 0 0.855 0 0 0</pose>
       <box>
-        <size>1 2.5 0.002</size>
+        <size>1 2.0 0.002</size>
       </box>
       <model_count>5</model_count>
       <distribution>
