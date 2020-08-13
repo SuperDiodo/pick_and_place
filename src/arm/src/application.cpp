@@ -26,6 +26,12 @@ public:
     detected_model = false;
   }
 
+  /* Return to a safe position */
+  void reset_position(){
+      move_group->setNamedTarget("default");
+      move_group->move();
+  }
+
   /* High level method, simulate pick_and_place pipeline */
   void pick_and_place(std::string topic)
   {
@@ -36,8 +42,10 @@ public:
     for (int i = 0; i < targets.size(); i++)
     {
       pick(i);
-      place(i, false);
+      place(i);
     }
+
+    reset_position();
   }
 
 private:
@@ -341,7 +349,7 @@ private:
   }
 
   /* generate place poses and try to place the target */
-  void place(int target_id, bool return_start)
+  void place(int target_id)
   {
     std::vector<moveit_msgs::PlaceLocation> places;
 
@@ -374,12 +382,6 @@ private:
     std::cout << "Generated " << places.size() << " place locations" << std::endl;
     move_group->setSupportSurfaceName("place_location");
     move_group->place(std::to_string(target_id), places);
-
-    if (return_start)
-    {
-      move_group->setNamedTarget("start");
-      move_group->move();
-    }
   }
 };
 

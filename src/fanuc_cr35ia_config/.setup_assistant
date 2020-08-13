@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: fanuc_cr35ia_support
+    relative_path: urdf/assembled_arm_2.0.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/assembled_robot.srdf
+  CONFIG:
+    author_name: alessio saccuti
+    author_email: alessio.saccuti@gmail.com
+    generated_timestamp: 1597303344
