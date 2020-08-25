@@ -4,7 +4,7 @@ Simulation of a pick and place pipeline, the robotic arm has to take some box an
 
 We recreated a simple gazebo scene as shown in the figure:
 
-![gazebo](https://github.com/SuperDiodo/pick_and_place/blob/master/images/gazebo_image.png)
+![gazebo](https://github.com/SuperDiodo/pick_and_place/blob/master/images/gazebo_sim.png)
 
 The kinect will publish the detected poses into the ```\poses``` topic. The execution simulation can be done in **Rviz**, with the help of **Moveit!** 
 
