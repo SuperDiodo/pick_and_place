@@ -7,14 +7,14 @@ The detection part is performed in Gazebo, we recreated a simple scene as shown 
 ![gazebo](https://github.com/SuperDiodo/pick_and_place/blob/master/images/gazebo_sim.png)
 
 A ROS node called "vision_node" is responsible to process images in order to find objects position and orientation and publish them into the ```\poses``` topic.
-for more info read "final_report.pdf" chapter 3.
+For more info read "final_report.pdf" chapter 3.
 
 The execution simulation is performed in **Rviz**, with the help of **Moveit!** 
 
 
 ![rviz](https://github.com/SuperDiodo/pick_and_place/blob/master/images/rviz_image.png)
 
-The manipulator receives the poses, and performs grasping and motion planning. 
+The manipulator receives the poses, in order to perform grasping and motion planning. For more info read "final_report.pdf" chapter 4.
 
 You can see the video here:
 
