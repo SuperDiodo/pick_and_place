@@ -1,14 +1,20 @@
-# Pick and place
+# Pick and place simulation
 
 Simulation of a pick and place pipeline, the robotic arm has to take some box and place them on a destination table. The simulation is divided into two main part: detection and execution.
 
-We recreated a simple gazebo scene as shown in the figure:
+The detection part is performed in Gazebo, we recreated a simple scene as shown in the figure:
 
 ![gazebo](https://github.com/SuperDiodo/pick_and_place/blob/master/images/gazebo_sim.png)
 
-The kinect will publish the detected poses into the ```\poses``` topic. The execution simulation can be done in **Rviz**, with the help of **Moveit!** 
+A ROS node called "vision_node" is responsible to process images in order to find objects position and orientation and publish them into the ```\poses``` topic.
+for more info read "final_report.pdf" chapter 3.
+
+The execution simulation is performed in **Rviz**, with the help of **Moveit!** 
+
 
 ![rviz](https://github.com/SuperDiodo/pick_and_place/blob/master/images/rviz_image.png)
+
+The manipulator receives the poses, and performs grasping and motion planning. 
 
 You can see the video here:
 
@@ -18,6 +24,8 @@ You can see the video here:
 ### Start the simulation
 
 The project was developed in Ubuntu 18.04, with ROS melodic.
+
+<h3> NOTE: This is a work in progess project, some error or bug may occour. To allow us improving please report us any problem. </h3>
 
 1. Install file:
    1. **[ROS](http://wiki.ros.org/melodic/Installation)** 
