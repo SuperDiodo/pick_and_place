@@ -18,7 +18,7 @@ The manipulator receives the poses, in order to perform grasping and motion plan
 
 You can see the video here:
 
-[![Watch the video](https://img.youtube.com/vi/DumeUdD6gvw/hqdefault.jpg)](https://www.youtube.com/watch?v=DumeUdD6gvw)
+[![Watch the video](https://img.youtube.com/vi/BoZGgX4kLmk/hqdefault.jpg)](https://www.youtube.com/watch?v=BoZGgX4kLmk)
 
 
 ### Start the simulation
