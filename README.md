@@ -32,7 +32,7 @@ The project was developed in Ubuntu 18.04, with ROS melodic.
    2. **[MoveIt!](https://moveit.ros.org/install/)**
    3. **[OpenCV](https://wiki.ros.org/vision_opencv)**: ```sudo apt-get install ros-melodic-vision-opencv```.
 
-2. Drag the files in the **utils** folder directly in the gazebo models folder.
+2. Copy files in the **utils** folder to home/.gazebo/models.
 
 3. Launch!
 
