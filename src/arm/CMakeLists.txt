@@ -4,8 +4,6 @@ project(arm)
 find_package(catkin REQUIRED COMPONENTS
     roscpp
     moveit_ros_planning_interface
-    pcl_conversions 
-    pcl_ros
     sensor_msgs 
 )
 
