@@ -38,10 +38,10 @@ The project was developed in Ubuntu 18.04, with ROS melodic.
 
    
 
-For a simplest launch just digit in terminal ```roslaunch bigger_cr35_config simulation.launch```, or type in  a terminal tab or window for each file:
+For a simplest launch just digit in terminal ```roslaunch fanuc_cr35_config simulation.launch```, or type in  a terminal tab or window for each file:
 
 1. ```roslaunch vision scene.launch```: this will start gazebo.
-2.  ``` roslaunch bigger_cr35_config demo.launch```: this will start rviz.
+2.  ``` roslaunch fanuc_cr35_config demo.launch```: this will start rviz.
 3. ```rosrun arm application```: this will add some collision objects into rviz.
 4. ```rosrun vision vision_node```: this will show the detected target from gazebo and start the arm.
 
